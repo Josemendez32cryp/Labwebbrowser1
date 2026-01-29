@@ -64,7 +64,7 @@
             this.messajeToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1349, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(1349, 28);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
@@ -123,6 +123,7 @@
             this.webexplorer.Location = new System.Drawing.Point(0, 63);
             this.webexplorer.Name = "webexplorer";
             this.webexplorer.Size = new System.Drawing.Size(1337, 595);
+            this.webexplorer.Source = new System.Uri("https://www.google.com", System.UriKind.Absolute);
             this.webexplorer.TabIndex = 4;
             this.webexplorer.ZoomFactor = 1D;
             this.webexplorer.Click += new System.EventHandler(this.webexplorer_Click);
