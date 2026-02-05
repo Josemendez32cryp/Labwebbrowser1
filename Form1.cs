@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace paginaweb1
 {
@@ -74,15 +75,18 @@ namespace paginaweb1
                 }
                 webexplorer.Source = new Uri(Url);
             }
-
-
-
-       
-
-
             
 
-        
+
+
+
+
+
+
+
+
+
+
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
