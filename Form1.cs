@@ -4,11 +4,14 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace paginaweb1
 {
@@ -19,9 +22,25 @@ namespace paginaweb1
         public Form1()
         {
             InitializeComponent();
+           
+            
+             FileStream stream = new FileStream("archivo.txt", FileMode.Open, FileAccess.Read);
+             StreamReader reader = new StreamReader(stream);
+
+             
+             while (reader.Peek() > -1)
+            
+             {
+                 comboBox1.Items.Add(reader.ReadLine());
+             }
+             
+             reader.Close();
         }
 
-       
+
+        
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -40,6 +59,7 @@ namespace paginaweb1
 
         private void buttonir_Click(object sender, EventArgs e)
         {
+            Guardar("archivo.txt", comboBox1.Text);
             Boolean http = false;
             Boolean www = false;
             Boolean com= false;
@@ -88,6 +108,22 @@ namespace paginaweb1
 
 
         }
+      
+        private void Guardar(string fileName, string texto)
+        {
+            //Abrir el archivo: Write sobreescribe el archivo, Append agrega los datos al final del archivo
+            FileStream stream = new FileStream(fileName, FileMode.Append, FileAccess.Write);
+            
+            StreamWriter writer = new StreamWriter(stream);
+            writer.WriteLine(texto);
+            comboBox1.Items.Add(texto);
+           
+            writer.Close();
+        }
+
+       
+
+   
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
