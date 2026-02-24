@@ -44,6 +44,7 @@ namespace paginaweb1
                 url.Ultimoacceso=Convert.ToDateTime(reader.ReadLine());
 
                 Urllist.Add(url);
+               
 
                 
                 direccionlist.Add(url.Direccion);
@@ -221,6 +222,8 @@ namespace paginaweb1
         {
             String urleliminar = comboBox1.Text;
             Urllist.RemoveAll(u => u.Direccion == urleliminar);
+            comboBox1.DataSource = null;
+            comboBox1.DataSource = Urllist;
             Guardar(@"archivo.txt");
         }
     }
