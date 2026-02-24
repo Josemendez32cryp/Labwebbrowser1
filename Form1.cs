@@ -17,24 +17,42 @@ namespace paginaweb1
 {
     public partial class Form1 : Form
     {
+        List<URL> Urllist = new List<URL>();
+        List<String> direccionlist = new List<String>();
         private object addressBar;
 
         public Form1()
         {
             InitializeComponent();
-           
-            
-             FileStream stream = new FileStream("archivo.txt", FileMode.Open, FileAccess.Read);
-             StreamReader reader = new StreamReader(stream);
 
-             
-             while (reader.Peek() > -1)
+            LeerHistorial();
             
-             {
-                 comboBox1.Items.Add(reader.ReadLine());
-             }
-             
-             reader.Close();
+        }
+        private void LeerHistorial()
+        {
+            FileStream stream = new FileStream("archivo.txt", FileMode.Open, FileAccess.Read);
+            StreamReader reader = new StreamReader(stream);
+
+            direccionlist.Clear();
+            Urllist.Clear();
+
+            while (reader.Peek() >-1)
+            {
+                URL url = new URL();
+                url.Direccion = reader.ReadLine();
+                url.Cantidad=Convert.ToInt16(reader.ReadLine());
+                url.Ultimoacceso=Convert.ToDateTime(reader.ReadLine());
+
+                Urllist.Add(url);
+
+                
+                direccionlist.Add(url.Direccion);
+                comboBox1.DataSource = null;
+                comboBox1.DataSource = direccionlist;
+
+            }
+
+            reader.Close();
         }
 
 
@@ -59,7 +77,7 @@ namespace paginaweb1
 
         private void buttonir_Click(object sender, EventArgs e)
         {
-            Guardar("archivo.txt", comboBox1.Text);
+           
             Boolean http = false;
             Boolean www = false;
             Boolean com= false;
@@ -94,8 +112,33 @@ namespace paginaweb1
                     Url = Url + ".com";
                 }
                 webexplorer.Source = new Uri(Url);
+
             }
-            
+            string duplicado = Url;
+            URL encontrado = Urllist.Find(u => u.Direccion == duplicado);
+            if (encontrado == null)
+            {
+                URL direccion = new URL();
+                direccion.Direccion = Url;
+                direccion.Cantidad ++;
+                direccion.Ultimoacceso = DateTime.Now;
+                Urllist.Add(direccion);
+                Guardar("archivo.txt");
+            } else
+            {
+                encontrado.Cantidad++;
+                encontrado.Ultimoacceso = DateTime.Now;
+                Guardar("archivo.txt");
+            }
+
+            comboBox1.DataSource = null;
+            comboBox1.DataSource = direccionlist;
+
+
+
+
+
+
 
 
 
@@ -109,16 +152,25 @@ namespace paginaweb1
 
         }
       
-        private void Guardar(string fileName, string texto)
+        private void Guardar(string fileName)
         {
             //Abrir el archivo: Write sobreescribe el archivo, Append agrega los datos al final del archivo
-            FileStream stream = new FileStream(fileName, FileMode.Append, FileAccess.Write);
+            FileStream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             
             StreamWriter writer = new StreamWriter(stream);
-            writer.WriteLine(texto);
-            comboBox1.Items.Add(texto);
-           
+
+            foreach (var direccion in Urllist)
+            {
+                writer.WriteLine(direccion.Direccion);
+                writer.WriteLine(direccion.Cantidad);
+                writer.WriteLine(direccion.Ultimoacceso);
+
+            }
+            
+            
+
             writer.Close();
+            LeerHistorial();
         }
 
        
@@ -154,6 +206,22 @@ namespace paginaweb1
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
+        }
+
+       
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+     
+
+        private void eliminarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            String urleliminar = comboBox1.Text;
+            Urllist.RemoveAll(u => u.Direccion == urleliminar);
+            Guardar(@"archivo.txt");
         }
     }
 }
