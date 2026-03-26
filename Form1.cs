@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,7 +7,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,36 +28,60 @@ namespace paginaweb1
         {
             InitializeComponent();
 
-            LeerHistorial();
+            //LeerHistorial();
+            leerJson();
             
         }
-        private void LeerHistorial()
-        {
-            FileStream stream = new FileStream("archivo.txt", FileMode.Open, FileAccess.Read);
-            StreamReader reader = new StreamReader(stream);
+        //private void LeerHistorial()
+        //{
+        //
+          //  FileStream stream = new FileStream("archivo.txt", FileMode.Open, FileAccess.Read);
+            //StreamReader reader = new StreamReader(stream);
+            //
+            //direccionlist.Clear();
+            //Urllist.Clear();
 
+//            while (reader.Peek() >-1)
+ //           {
+   //             URL url = new URL();
+     //           url.Direccion = reader.ReadLine();
+       //         url.Cantidad=Convert.ToInt16(reader.ReadLine());
+         //       url.Ultimoacceso=Convert.ToDateTime(reader.ReadLine());
+         //
+           //     Urllist.Add(url);
+           //
+           //
+           //
+             //   direccionlist.Add(url.Direccion);
+               // comboBox1.DataSource = null;
+  //              comboBox1.DataSource = direccionlist;
+//
+    //        }
+
+    //        reader.Close();
+            
+      //  }
+        private void leerJson()
+        {
             direccionlist.Clear();
             Urllist.Clear();
-
-            while (reader.Peek() >-1)
+            URL_Persistencia persistencia = new URL_Persistencia();
+            Urllist = persistencia.LeerJson();
+            foreach (URL url in Urllist)
             {
-                URL url = new URL();
-                url.Direccion = reader.ReadLine();
-                url.Cantidad=Convert.ToInt16(reader.ReadLine());
-                url.Ultimoacceso=Convert.ToDateTime(reader.ReadLine());
-
-                Urllist.Add(url);
-               
-
-                
-                direccionlist.Add(url.Direccion);
-                comboBox1.DataSource = null;
-                comboBox1.DataSource = direccionlist;
-
+                 direccionlist.Add(url.Direccion);
+            comboBox1.DataSource = null;
+            comboBox1.DataSource = direccionlist;
             }
+           
 
-            reader.Close();
         }
+        private void guardarJson()
+        {
+            URL_Persistencia persistencia = new URL_Persistencia();
+            persistencia.GuardarJson(Urllist);
+            leerJson();
+        } 
 
 
         
@@ -124,38 +151,22 @@ namespace paginaweb1
                 direccion.Cantidad ++;
                 direccion.Ultimoacceso = DateTime.Now;
                 Urllist.Add(direccion);
-                Guardar("archivo.txt");
+                //Guardar("archivo.txt");
+                guardarJson();
             } else
             {
                 encontrado.Cantidad++;
                 encontrado.Ultimoacceso = DateTime.Now;
-                Guardar("archivo.txt");
+                //Guardar("archivo.txt");
+                guardarJson();
             }
 
             comboBox1.DataSource = null;
             comboBox1.DataSource = direccionlist;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
       
         private void Guardar(string fileName)
         {
-            //Abrir el archivo: Write sobreescribe el archivo, Append agrega los datos al final del archivo
             FileStream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write);
             
             StreamWriter writer = new StreamWriter(stream);
@@ -171,7 +182,8 @@ namespace paginaweb1
             
 
             writer.Close();
-            LeerHistorial();
+            //LeerHistorial();
+            //guardarJson();
         }
 
        
@@ -223,8 +235,9 @@ namespace paginaweb1
             String urleliminar = comboBox1.Text;
             Urllist.RemoveAll(u => u.Direccion == urleliminar);
             comboBox1.DataSource = null;
-            comboBox1.DataSource = Urllist;
-            Guardar(@"archivo.txt");
+            comboBox1.DataSource = direccionlist;
+            //Guardar(@"archivo.txt");
+            guardarJson();
         }
     }
 }
